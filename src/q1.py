@@ -15,7 +15,7 @@ import pdb
 class Solution:
 
     def __init__(self):
-        self.randTSP_file = '../data/randTSP/10/instance_1.txt'
+        self.randTSP_file = '../data/randTSP/16/instance_3.txt'
 
     def main(self):
         print 'started ---------------'
@@ -38,25 +38,25 @@ class Solution:
 
         q = PriorityQueue()
 
-        q.put((0, [['A'], 0]))
+        q.put((0, [[s_city_name], 0]))
     
         while not q.empty():
             temp  = q.get()[1]
             path = temp[0]
             prev_acc_cost = temp[1]
-         
-            #if len(path) == num_cities + 1:
-                #pdb.set_trace()
-            #    return path, prev_acc_cost
+        
+            # Travelled all cities and then back to start
+            if len(path) == num_cities + 1:
+                return path, prev_acc_cost
 
+            # Travelled all cities 
             if len(path) == num_cities:
                 heur, acc_cost = self.calc_heur(g, path, s_city_name, s, prev_acc_cost)
                 new_path = path[:]
                 new_path.append(s_city_name)
 
-                #q.put((heur, [new_path, acc_cost]))
-
-                return new_path, acc_cost
+                q.put((heur, [new_path, acc_cost]))
+            # Haven't travelled all cities
             else:
                 not_visited = set(path).symmetric_difference(set(g.keys()))
 
@@ -76,18 +76,18 @@ class Solution:
         acc_cost = prev_acc_cost + self.eucl_dist(g[path[-1]], g[next_city])
 
         # Heuristic function 1
-        h1 = self.eucl_dist(g[next_city], s)
+        #h1 = self.eucl_dist(g[next_city], s)
 
         # Heuristic function 2
         # h2 = self.calc_min_next_dist(g, path, next_city) 
 
         # Heuristic function 3
-        h3 = self.calc_mst_weight(g, path, next_city,)
+        h3 = self.calc_mst_weight(g, path, next_city)
 
         # Zero Heuristic function
         h0 = 0    
 
-        f = acc_cost + h1 
+        f = acc_cost + h3
 
         return f, acc_cost
 
@@ -97,9 +97,33 @@ class Solution:
 
         not_visited = set(new_path).symmetric_difference(set(g.keys()))
         not_visited = list(not_visited)
-        # For looping back to A start node
+        # for looping back to A start node
         not_visited.append('A')
 
+        # find minimum spanning tree weight
+        # generate edges
+        edges = []
+
+        for i in range(len(not_visited)):
+            for j in range(len(not_visited)):
+                if j != i:
+                    src = not_visited[i]
+                    dest = not_visited[j]
+                    weight = self.eucl_dist(g[src], g[dest])
+                    
+                    edge = [src, dest, weight]
+                    
+                    edges.append(edge)
+
+        mst_g = self.MST_Graph(not_visited)
+
+        for src,dest,weight in edges:
+            mst_g.add_edge(src, dest, weight)  
+
+        return mst_g.get_mst_weight()
+
+        pdb.set_trace()
+    
     def calc_min_next_dist(self, g, path, next_city):
         new_path = path[:]
         new_path.append(next_city)
@@ -186,11 +210,23 @@ class Solution:
 
         fig, graph = plt.subplots()
         graph.scatter(x_coords, y_coords)
+        graph.plot(x_coords, y_coords)
 
         for i, label in enumerate(path):
             graph.annotate(label, (x_coords[i], y_coords[i]))
 
         plt.show()
+
+    def test_mst(self):
+        vertices = [0,1,2,3]
+        g = self.MST_Graph(vertices)
+        g.add_edge(0, 1, 10) 
+        g.add_edge(0, 2, 6) 
+        g.add_edge(0, 3, 5) 
+        g.add_edge(1, 3, 15) 
+        g.add_edge(2, 3, 4) 
+
+        print g.get_mst_weight()
 
     # Helper Classes -----
     
@@ -208,13 +244,12 @@ class Solution:
     # Implements a disjoint set to check for cycles in graph
     class MST_Graph:
         
-        def __init__(self):
+        def __init__(self, vertices):
             self.graph = []
-            self.num_vertices = 0
+            self.vertices = vertices
 
         def add_edge(self, src, dest, weight):
             self.graph.append([src, dest, weight])
-            self.num_vertices += 1
 
         def find(self, parent, vertex):
             if parent[vertex] == vertex:
@@ -222,9 +257,51 @@ class Solution:
             
             return self.find(parent, parent[vertex])
                             
-        def union(self, parent, rank, set1, set2):
-            pass  
-            
+        def union(self, parent, rank, vertex_x, vertex_y):
+            x_set = self.find(parent, vertex_x)
+            y_set = self.find(parent, vertex_y)
+
+            if rank[x_set] < rank[y_set]:
+                parent[x_set] = y_set
+            elif rank[x_set] > rank[y_set]:
+                parent[y_set] = x_set
+            else:
+                # Just pick one
+                parent[y_set] = x_set
+                rank[x_set] += 1
+
+        def get_mst_weight(self):
+            # kruskal mst algorithm
+            # sort graph by weight of edges
+            self.graph = sorted(self.graph, key=lambda edge: edge[2])
+
+            # initialize parent and rank arrays
+            parent = {}
+            rank = {}
+
+            for vertex in self.vertices:
+                parent[vertex] = vertex
+                rank[vertex] = 0
+
+            edge_count = 0
+            mst_weight  = 0
+            num_mst_edges = 0
+    
+            while num_mst_edges < len(self.vertices) - 1:
+                src, dest, weight = self.graph[edge_count]
+                
+                edge_count += 1
+
+                src_set = self.find(parent, src)
+                dest_set = self.find(parent, dest)
+
+                # if not in same set then add to mst weight
+                if src_set != dest_set:
+                    num_mst_edges += 1
+                    mst_weight += weight
+                    self.union(parent, rank, src, dest)
+
+            return mst_weight
 
 if __name__ == '__main__':
     sol = Solution()
