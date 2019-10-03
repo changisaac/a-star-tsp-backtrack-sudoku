@@ -12,33 +12,50 @@ import time
 
 import pdb
 
-class Solution:
+class TSPSolution:
 
     def __init__(self):
-        self.randTSP_file = '../data/randTSP/16/instance_3.txt'
+        self.data_dir = '../data/randTSP/'
 
     def main(self):
-        print 'started ---------------'
-        
-        num_cities, g = self.read_in(self.randTSP_file)
-        
-        start_time = time.time()
-        final_path, dist_travelled = self.a_star_tsp(num_cities, g, 'A')
-        
-        print 'results:'
-        print 'time taken: ' + str(time.time() - start_time) + " second(s)" 
-        print 'final path: ' + str(final_path)
-        print 'distance travelled: ' + str(dist_travelled) + ' units'
+        num_passed = 0
 
-        print 'ended ---------------'
-        self.display_cities(g, final_path)
+        for i in range(10,11):
+            print 'Number of Cities: ' + str(i)
+            test_dir = self.data_dir + str(i) + '/'
+            
+            ave_num_nodes = 0
+
+            for j in range(1,11):
+                print 'started test case # ' + str(j)
+                test_file = test_dir +  'instance_' + str(j) + '.txt' 
+                num_cities, g = self.read_in(test_file)
+                
+                start_time = time.time()
+                final_path, dist_travelled, num_nodes = self.a_star_tsp(num_cities, g, 'A')
+                
+                ave_num_nodes += num_nodes
+
+                print 'final path: ' + str(final_path)
+                print 'distance travelled: ' + str(dist_travelled) + ' units'
+                print 'number of nodes generated: ' + str(num_nodes)
+                print 'time taken: ' + str(time.time() - start_time) + " second(s)" 
+
+            ave_num_nodes /= 10
+
+            print "AVERAGE NUMBER OF NODES GENERATED: " + str(ave_num_nodes)
+
+#                self.display_cities(g, final_path)
 
     def a_star_tsp(self, num_cities, g, s_city_name):
+        num_nodes = 0
+    
         s = g[s_city_name]
 
         q = PriorityQueue()
 
         q.put((0, [[s_city_name], 0]))
+        num_nodes += 1
     
         while not q.empty():
             temp  = q.get()[1]
@@ -47,15 +64,15 @@ class Solution:
         
             # Travelled all cities and then back to start
             if len(path) == num_cities + 1:
-                return path, prev_acc_cost
+                return path, prev_acc_cost, num_nodes
 
             # Travelled all cities 
             if len(path) == num_cities:
                 heur, acc_cost = self.calc_heur(g, path, s_city_name, s, prev_acc_cost)
                 new_path = path[:]
                 new_path.append(s_city_name)
-
                 q.put((heur, [new_path, acc_cost]))
+                num_nodes += 1
             # Haven't travelled all cities
             else:
                 not_visited = set(path).symmetric_difference(set(g.keys()))
@@ -65,11 +82,8 @@ class Solution:
                     new_path = path[:]
                     new_path.append(city)
                     q.put((heur, [new_path, acc_cost]))
+                    num_nodes += 1
 
-                    #pdb.set_trace()
-
-            #pdb.set_trace()
-    
     # Heuristic Calculation Functions -----
     
     def calc_heur(self, g, path, next_city, s, prev_acc_cost):
@@ -304,5 +318,5 @@ class Solution:
             return mst_weight
 
 if __name__ == '__main__':
-    sol = Solution()
+    sol = TSPSolution()
     sol.main()

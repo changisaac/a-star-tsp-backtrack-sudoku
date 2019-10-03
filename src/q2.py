@@ -8,7 +8,7 @@ import sys
 import copy
 import pdb
 
-class Solution:
+class SudokuSolution:
 
     def __init__(self):
         self.sudoku_problems_file = '../data/sudoku_problems/1/1.sd'
@@ -374,5 +374,5 @@ class Solution:
         return grid
 
 if __name__ == '__main__':
-    sol = Solution()
+    sol = SudokuSolution()
     sol.main()
