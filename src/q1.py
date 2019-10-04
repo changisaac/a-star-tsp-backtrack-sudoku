@@ -18,13 +18,14 @@ class TSPSolution:
         self.data_dir = '../data/randTSP/'
 
     def main(self):
-        num_passed = 0
+        f = open('q1_results_h0.txt', 'a')
 
-        for i in range(10,11):
+        for i in range(1,17):
             print 'Number of Cities: ' + str(i)
             test_dir = self.data_dir + str(i) + '/'
             
             ave_num_nodes = 0
+            num_passed = 0
 
             for j in range(1,11):
                 print 'started test case # ' + str(j)
@@ -32,22 +33,30 @@ class TSPSolution:
                 num_cities, g = self.read_in(test_file)
                 
                 start_time = time.time()
-                final_path, dist_travelled, num_nodes = self.a_star_tsp(num_cities, g, 'A')
+                final_path, dist_travelled, num_nodes, passed = self.a_star_tsp(num_cities, g, 'A')
                 
-                ave_num_nodes += num_nodes
+                if passed:
+                    ave_num_nodes += num_nodes
+                    num_passed += 1
 
-                print 'final path: ' + str(final_path)
-                print 'distance travelled: ' + str(dist_travelled) + ' units'
-                print 'number of nodes generated: ' + str(num_nodes)
-                print 'time taken: ' + str(time.time() - start_time) + " second(s)" 
+                    print 'final path: ' + str(final_path)
+                    print 'distance travelled: ' + str(dist_travelled) + ' units'
+                    print 'number of nodes generated: ' + str(num_nodes)
+                    print 'time taken: ' + str(time.time() - start_time) + " second(s)" 
+                else:
+                    print 'FAILED'
 
-            ave_num_nodes /= 10
+                #self.display_cities(g, final_path)
+            
+            ave_num_nodes /= num_passed
 
+            f.write(str(ave_num_nodes) + '\n')
             print "AVERAGE NUMBER OF NODES GENERATED: " + str(ave_num_nodes)
 
-#                self.display_cities(g, final_path)
 
     def a_star_tsp(self, num_cities, g, s_city_name):
+        s_time = time.time()
+
         num_nodes = 0
     
         s = g[s_city_name]
@@ -62,9 +71,12 @@ class TSPSolution:
             path = temp[0]
             prev_acc_cost = temp[1]
         
+            if time.time() - s_time > 300:
+                return path, prev_acc_cost, num_nodes, False
+
             # Travelled all cities and then back to start
             if len(path) == num_cities + 1:
-                return path, prev_acc_cost, num_nodes
+                return path, prev_acc_cost, num_nodes, True
 
             # Travelled all cities 
             if len(path) == num_cities:
@@ -96,12 +108,12 @@ class TSPSolution:
         # h2 = self.calc_min_next_dist(g, path, next_city) 
 
         # Heuristic function 3
-        h3 = self.calc_mst_weight(g, path, next_city)
+        #h3 = self.calc_mst_weight(g, path, next_city)
 
         # Zero Heuristic function
-        h0 = 0    
+        #h0 = 0    
 
-        f = acc_cost + h3
+        f = acc_cost + 0
 
         return f, acc_cost
 

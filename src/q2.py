@@ -11,35 +11,51 @@ import pdb
 class SudokuSolution:
 
     def __init__(self):
-        self.sudoku_problems_file = '../data/sudoku_problems/1/1.sd'
+        self.data_dir = '../data/sudoku_problems/'
 
     def main(self):
-        num_passed = 0
+        f = open('q2_results_bt.txt', 'a')
 
-        for i in range(1,11):
-            print 'started test case # ' + str(i)
-            file_name = '../data/sudoku_problems/15/' + str(i) + '.sd'
+        for j in range(1,72):
+            print str(j) + ' Filled Cell(s)'
+            test_dir = self.data_dir + str(j) + '/'
+            num_var_gen = 0
+            num_passed = 0
 
-            grid = self.read_in(file_name)
-            #self.print_grid(grid)
+            passed_all = True
 
-            #pdb.set_trace()
+            for i in range(1,11):
+                test_file = test_dir + str(i) + '.sd'
 
-            #res, num_var = self.solve_backtrack(grid)
-            valid_nums_grid = self.generate_forward_check_bool_arr()
-            #res, num_var = self.solve_backtrack_forward_check(grid, valid_nums_grid)
-            res, num_var = self.solve_backtrack_forward_check_heuristic(grid, valid_nums_grid)
+                print 'started test case # ' + str(i)
 
-            #pdb.set_trace()
-
-            if res:
+                grid = self.read_in(test_file)
                 #self.print_grid(grid)
-                print 'PASSED total number of variable assignments: ' + str(num_var)
-                num_passed += 1
+
+                #res, num_var = self.solve_backtrack(grid)
+                #valid_nums_grid = self.generate_forward_check_bool_arr()
+                #res, num_var = self.solve_backtrack_forward_check(grid, valid_nums_grid)
+                #res, num_var = self.solve_backtrack_forward_check_heuristic(grid, valid_nums_grid)
+
+                num_var_gen += num_var
+
+                if res:
+                    print 'PASSED total number of variable assignments: ' + str(num_var)
+                    num_passed += 1
+                else:
+                    print 'FAILED total number of variable assignments: ' + str(num_var)
+                    passed_all = False
+
+            num_var_gen /= num_passed
+   
+            if passed_all:
+                f.write(str(num_var_gen) + '\n')
             else:
-                print 'FAILED total number of variable assignments: ' + str(num_var)
-    
-        print 'Passed ' + str(num_passed) + '/10 Test Cases' 
+                f.write(str(num_var_gen) + '(F)\n')
+
+            f.flush()
+            print 'Average Number of Variables: ' + str(num_var_gen)
+            print 'Passed ' + str(num_passed) + '/10 Test Cases' 
 
     def solve_backtrack_forward_check_heuristic(self, grid, valid_nums_grid):
         num_var = 0
@@ -60,11 +76,7 @@ class SudokuSolution:
             if valid_nums_grid[row][col][i] == True:
                 new_range.append(i+1)
 
-        #pdb.set_trace()
-
         new_range_sorted_lcv = self.sort_range_lcv(grid, new_range, row, col)
-
-        #pdb.set_trace()
 
         for val in new_range_sorted_lcv:
             num_var += 1
