@@ -1,8 +1,7 @@
 # CS486
+# Author: Isaac Chang
 
-Author: Isaac Chang
-
-Question 1 Instructions:
+# Question 1 Instructions:
 
 - The program is set up to currently to run through only the 16 cities case for all 10 test cases.
 - Results of the test (path, nodes generated, time) will be printed to stdout after each test case is ran.
@@ -12,7 +11,7 @@ To Run:
 
 - `python q1.py`
 
-Question 2 Instructions:
+# Question 2 Instructions:
 
 - The program is set up to run using the backtrack + forward check + heuristic version of the solver
   through all 72 initial condition cases through all 10 test cases each.
