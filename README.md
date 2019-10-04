@@ -19,6 +19,6 @@ To Run:
 - Note that this version of the solver (backtrack + forward check + heuristic) does take a few seconds to run
   regardless of the numeber of initial values.
   
-  To Run:
+To Run:
   
-  - `python q2.py`
+- `python q2.py`
