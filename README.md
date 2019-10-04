@@ -7,7 +7,7 @@
 - Results of the test (path, nodes generated, time) will be printed to stdout after each test case is ran.
 - Uncomment out line 49 if you want to view the path on a plot using matplotlib
 - Feel free to modify the `calc_heur` function if you want to try the zero heuristic
-- Note that some of the test cases may takeup to 1 to 2 minutes. 
+### - Note that some of the test cases may takeup to 1 to 2 minutes. (The first test case of 16 cities takes about 70s)
 
 To Run:
 
