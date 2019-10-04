@@ -30,16 +30,16 @@ class SudokuSolution:
                 print 'started test case # ' + str(i)
 
                 grid = self.read_in(test_file)
-                #self.print_grid(grid)
+                valid_nums_grid = self.generate_forward_check_bool_arr()
 
                 #res, num_var = self.solve_backtrack(grid)
-                #valid_nums_grid = self.generate_forward_check_bool_arr()
                 #res, num_var = self.solve_backtrack_forward_check(grid, valid_nums_grid)
-                #res, num_var = self.solve_backtrack_forward_check_heuristic(grid, valid_nums_grid)
+                res, num_var = self.solve_backtrack_forward_check_heuristic(grid, valid_nums_grid)
 
                 num_var_gen += num_var
 
                 if res:
+                    self.print_grid(grid)
                     print 'PASSED total number of variable assignments: ' + str(num_var)
                     num_passed += 1
                 else:

@@ -20,7 +20,7 @@ class TSPSolution:
     def main(self):
         f = open('q1_results_h0.txt', 'a')
 
-        for i in range(1,17):
+        for i in range(16,17):
             print 'Number of Cities: ' + str(i)
             test_dir = self.data_dir + str(i) + '/'
             
@@ -105,15 +105,15 @@ class TSPSolution:
         #h1 = self.eucl_dist(g[next_city], s)
 
         # Heuristic function 2
-        # h2 = self.calc_min_next_dist(g, path, next_city) 
+        #h2 = self.calc_min_next_dist(g, path, next_city) 
 
         # Heuristic function 3
-        #h3 = self.calc_mst_weight(g, path, next_city)
+        h3 = self.calc_mst_weight(g, path, next_city)
 
         # Zero Heuristic function
         #h0 = 0    
 
-        f = acc_cost + 0
+        f = acc_cost + h3
 
         return f, acc_cost
 
