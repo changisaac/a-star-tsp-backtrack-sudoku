@@ -1,4 +1,4 @@
-# CS486
+# CS486 Assignment 1
 # Author: Isaac Chang
 
 # Question 1 Instructions:
@@ -11,6 +11,7 @@
 
 To Run:
 
+- `cd src`
 - `python q1.py`
 
 # Question 2 Instructions:
@@ -27,4 +28,5 @@ To Run:
   
 To Run:
   
+- `cd src`
 - `python q2.py`

@@ -148,8 +148,6 @@ class TSPSolution:
 
         return mst_g.get_mst_weight()
 
-        pdb.set_trace()
-    
     def calc_min_next_dist(self, g, path, next_city):
         new_path = path[:]
         new_path.append(next_city)
