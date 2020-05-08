@@ -1,7 +1,7 @@
-# CS486 Assignment 1
 # Author: Isaac Chang
 
-# Question 1 Instructions:
+# A* Travelling Salesman
+# Instructions:
 
 - The program is set up to currently to run through only the 16 cities case for all 10 test cases.
 - Results of the test (path, nodes generated, time) will be printed to stdout after each test case is ran.
@@ -14,7 +14,8 @@ To Run:
 - `cd src`
 - `python q1.py`
 
-# Question 2 Instructions:
+# Sudoku Solver
+# Instructions:
 
 - The program is set up to run using the backtrack + forward check + heuristic version of the solver
   through all 72 initial condition cases through all 10 test cases each.
