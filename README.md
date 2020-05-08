@@ -14,7 +14,7 @@ To Run:
 - `cd src`
 - `python q1.py`
 
-# Sudoku Solver
+# Backtrack (CSP) Sudoku Solver
 # Instructions:
 
 - The program is set up to run using the backtrack + forward check + heuristic version of the solver
